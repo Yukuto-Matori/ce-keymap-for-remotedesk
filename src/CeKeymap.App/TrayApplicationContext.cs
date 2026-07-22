@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using CeKeymap.App.Forms;
 using CeKeymap.App.Infrastructure;
@@ -75,10 +77,41 @@ namespace CeKeymap.App
             };
             menu.Items.Add(autoStartItem);
 
+            var developerMenu = new ToolStripMenuItem("開発者向け");
+            developerMenu.DropDownItems.Add(new ToolStripMenuItem("アプリログを開く", null, (s, e) => OpenLogFile()));
+            menu.Items.Add(developerMenu);
+
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add(new ToolStripMenuItem("終了", null, (s, e) => ExitApplication()));
 
             return menu;
+        }
+
+        private void OpenLogFile()
+        {
+            if (!File.Exists(_logger.FilePath))
+            {
+                MessageBox.Show(
+                    "ログファイルはまだ作成されていません。",
+                    "CeKeymap",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(_logger.FilePath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to open log.txt with the system default app.", ex);
+                MessageBox.Show(
+                    "ログファイルを開けませんでした。",
+                    "CeKeymap",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         private ToolStripMenuItem BuildFeatureSubmenu(FeatureId featureId, string label)

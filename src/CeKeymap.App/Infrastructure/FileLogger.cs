@@ -13,6 +13,8 @@ namespace CeKeymap.App.Infrastructure
             _logFilePath = logFilePath;
         }
 
+        public string FilePath => _logFilePath;
+
         public void Log(string message)
         {
             WriteLine($"[INFO] {message}");
