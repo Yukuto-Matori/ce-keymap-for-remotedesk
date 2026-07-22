@@ -57,7 +57,7 @@
 | アプリウィンドウ切り替え | 右Alt + 右Shift | `SendInput` で Alt+Tab 相当のキー入力をエミュレートする |
 | 拡大率変更 デスクトップ用 | 右Alt + D | Windows表示スケーリング(DPI)を、設定で指定された「デスクトップ用」の拡大率に変更する |
 | 拡大率変更 モバイル用 | 右Alt + M | Windows表示スケーリング(DPI)を、設定で指定された「モバイル用」の拡大率に変更する |
-| Winキー押下 | 右Shift + W | `SendInput` で Windowsキー単体を押下したのと同じキー入力をエミュレートする |
+| Winキー押下 | 右Alt + W | `SendInput` で Windowsキー単体を押下したのと同じキー入力をエミュレートする |
 
 - 各機能はキーバインド変更・個別ON/OFFが可能
 - 拡大率変更機能は、拡大率の値自体も設定で指定可能
@@ -91,7 +91,7 @@
   },
   "PressWinKey": {
     "Enabled": true,
-    "Modifiers": ["RShift"],
+    "Modifiers": ["RAlt"],
     "Key": "W"
   },
   "AutoStart": false

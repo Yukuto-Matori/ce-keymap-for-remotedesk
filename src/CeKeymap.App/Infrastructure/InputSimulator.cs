@@ -10,7 +10,9 @@ namespace CeKeymap.App.Infrastructure
     internal sealed class InputSimulator
     {
         private const int InputKeyboard = 1;
+        private const uint KeyEventFExtendedKey = 0x0001;
         private const uint KeyEventFKeyUp = 0x0002;
+        private const uint KeyEventFScanCode = 0x0008;
         private const ushort VkMenu = 0x12;   // Alt (generic)
         private const ushort VkTab = 0x09;
         private const ushort VkLWin = 0x5B;
@@ -26,29 +28,44 @@ namespace CeKeymap.App.Infrastructure
 
         public void SimulateWinKeyPress()
         {
-            SendKeyDown(VkLWin);
-            SendKeyUp(VkLWin);
+            // The Start Menu trigger is picky about how the Win key event looks: it must carry
+            // the extended-key flag and a real scan code (like a genuine LWin key press), and a
+            // zero-duration down+up can be missed entirely, hence the short hold.
+            SendKeyDown(VkLWin, extended: true);
+            Thread.Sleep(50);
+            SendKeyUp(VkLWin, extended: true);
         }
 
-        private static void SendKeyDown(ushort vk) => SendKeyInput(vk, keyUp: false);
+        private static void SendKeyDown(ushort vk, bool extended = false) => SendKeyInput(vk, keyUp: false, extended: extended);
 
-        private static void SendKeyUp(ushort vk) => SendKeyInput(vk, keyUp: true);
+        private static void SendKeyUp(ushort vk, bool extended = false) => SendKeyInput(vk, keyUp: true, extended: extended);
 
-        private static void SendKeyInput(ushort vk, bool keyUp)
+        private static void SendKeyInput(ushort vk, bool keyUp, bool extended)
         {
+            var flags = keyUp ? KeyEventFKeyUp : 0;
+
             var input = new INPUT
             {
                 type = InputKeyboard,
                 U = new InputUnion
                 {
-                    ki = new KEYBDINPUT
-                    {
-                        wVk = vk,
-                        wScan = 0,
-                        dwFlags = keyUp ? KeyEventFKeyUp : 0,
-                        time = 0,
-                        dwExtraInfo = System.IntPtr.Zero,
-                    }
+                    ki = extended
+                        ? new KEYBDINPUT
+                        {
+                            wVk = 0,
+                            wScan = (ushort)MapVirtualKey(vk, 0),
+                            dwFlags = flags | KeyEventFScanCode | KeyEventFExtendedKey,
+                            time = 0,
+                            dwExtraInfo = System.IntPtr.Zero,
+                        }
+                        : new KEYBDINPUT
+                        {
+                            wVk = vk,
+                            wScan = 0,
+                            dwFlags = flags,
+                            time = 0,
+                            dwExtraInfo = System.IntPtr.Zero,
+                        }
                 }
             };
 
@@ -57,6 +74,9 @@ namespace CeKeymap.App.Infrastructure
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct INPUT

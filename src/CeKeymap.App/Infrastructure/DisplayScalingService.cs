@@ -1,6 +1,5 @@
 using System;
-using System.Diagnostics;
-using System.Threading;
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
 namespace CeKeymap.App.Infrastructure
@@ -9,8 +8,9 @@ namespace CeKeymap.App.Infrastructure
     /// Changes the current display's scaling ("拡大率") by writing the same registry values
     /// Windows' own Settings app uses (HKCU\Control Panel\Desktop\PerMonitorSettings\&lt;monitor&gt;\DpiValue,
     /// a signed step offset from the monitor's recommended scaling, in the same ~25%-wide steps
-    /// as the Settings &gt; Display scaling slider), then restarts explorer.exe to force an
-    /// immediate re-read without requiring a full sign-out.
+    /// as the Settings &gt; Display scaling slider), then locks the workstation: explorer.exe
+    /// restart alone did not force Windows to re-apply the new value (confirmed by testing), but
+    /// Windows does reliably re-read per-monitor DPI when a session resumes from the lock screen.
     /// </summary>
     internal sealed class DisplayScalingService
     {
@@ -46,30 +46,15 @@ namespace CeKeymap.App.Infrastructure
                 }
             }
 
-            _logger.Log($"Wrote DpiValue={step} (ZoomPercent={zoomPercent}) to all monitors; restarting explorer.exe to apply.");
-            RestartExplorer();
-        }
+            _logger.Log($"Wrote DpiValue={step} (ZoomPercent={zoomPercent}) to all monitors; locking workstation to apply.");
 
-        private void RestartExplorer()
-        {
-            foreach (var process in Process.GetProcessesByName("explorer"))
+            if (!LockWorkStation())
             {
-                try
-                {
-                    process.Kill();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Failed to stop an explorer.exe process.", ex);
-                }
-                finally
-                {
-                    process.Dispose();
-                }
+                _logger.LogError($"LockWorkStation failed (Win32 error {Marshal.GetLastWin32Error()}).");
             }
-
-            Thread.Sleep(300);
-            Process.Start("explorer.exe");
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool LockWorkStation();
     }
 }

@@ -59,7 +59,7 @@ namespace CeKeymap.Core.Tests.Models
             var binding = AppSettings.CreateDefault().Features[FeatureId.PressWinKey];
 
             Assert.That(binding.Enabled, Is.True);
-            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RShift }));
+            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt }));
             Assert.That(binding.KeyCombo.MainKey, Is.EqualTo("W"));
         }
 

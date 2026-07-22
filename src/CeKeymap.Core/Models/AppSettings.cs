@@ -37,7 +37,7 @@ namespace CeKeymap.Core.Models
                     [FeatureId.PressWinKey] = new FeatureBinding(
                         FeatureId.PressWinKey,
                         enabled: true,
-                        keyCombo: new KeyCombo(new[] { ModifierKey.RShift }, "W")),
+                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt }, "W")),
                 }
             };
         }
