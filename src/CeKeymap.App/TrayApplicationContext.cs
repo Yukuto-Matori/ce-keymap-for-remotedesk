@@ -22,6 +22,7 @@ namespace CeKeymap.App
         private readonly SettingsFileRepository _settingsRepository;
         private readonly AutoStartService _autoStartService;
         private readonly KeyboardHookService _hookService;
+        private readonly FileLogger _logger;
         private readonly InputSimulator _inputSimulator = new InputSimulator();
         private readonly DisplayScalingService _displayScalingService = new DisplayScalingService();
 
@@ -30,12 +31,14 @@ namespace CeKeymap.App
             SettingsFileRepository settingsRepository,
             AutoStartService autoStartService,
             KeyboardHookService hookService,
+            FileLogger logger,
             Icon icon)
         {
             _settings = settings;
             _settingsRepository = settingsRepository;
             _autoStartService = autoStartService;
             _hookService = hookService;
+            _logger = logger;
 
             _hookService.FeatureTriggered += OnFeatureTriggered;
 
@@ -143,18 +146,26 @@ namespace CeKeymap.App
         private void OnFeatureTriggered(FeatureId featureId)
         {
             var binding = _settings.Features[featureId];
-            if (!binding.Enabled) return;
+            if (!binding.Enabled)
+            {
+                _logger.Log($"Feature {featureId} matched but is disabled; skipping execution.");
+                return;
+            }
 
             switch (featureId)
             {
                 case FeatureId.AppWindowSwitch:
+                    _logger.Log("Executing AppWindowSwitch (Alt+Tab emulation).");
                     _inputSimulator.SimulateAppWindowSwitch();
                     break;
                 case FeatureId.ZoomDesktop:
                 case FeatureId.ZoomMobile:
-                    _displayScalingService.ApplyZoomPercent(binding.ZoomPercent ?? 100);
+                    var zoomPercent = binding.ZoomPercent ?? 100;
+                    _logger.Log($"Executing {featureId} (ZoomPercent={zoomPercent}).");
+                    _displayScalingService.ApplyZoomPercent(zoomPercent);
                     break;
                 case FeatureId.PressWinKey:
+                    _logger.Log("Executing PressWinKey (left Win key emulation).");
                     _inputSimulator.SimulateWinKeyPress();
                     break;
             }

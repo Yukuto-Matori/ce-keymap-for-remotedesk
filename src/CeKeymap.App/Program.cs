@@ -37,7 +37,7 @@ namespace CeKeymap.App
                 hookService.Start();
 
                 var icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath) ?? SystemIcons.Application;
-                var trayContext = new TrayApplicationContext(settings, settingsRepository, autoStartService, hookService, icon);
+                var trayContext = new TrayApplicationContext(settings, settingsRepository, autoStartService, hookService, logger, icon);
 
                 try
                 {

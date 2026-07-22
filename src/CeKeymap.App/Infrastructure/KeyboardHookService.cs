@@ -107,7 +107,9 @@ namespace CeKeymap.App.Infrastructure
             {
                 if (_pressedModifiers.Add(modifier.Value))
                 {
-                    TryMatchAndTrigger(null);
+                    // A main key may already be held (pressed before the modifier finished
+                    // registering); re-match using it instead of assuming a modifier-only combo.
+                    TryMatchAndTrigger(_activeMainKeyVk.HasValue ? VkCodeToKeyName(_activeMainKeyVk.Value) : null);
                 }
                 return;
             }
@@ -139,6 +141,8 @@ namespace CeKeymap.App.Infrastructure
             var matched = _matcher.Match(_pressedModifiers, mainKey, settings);
             if (matched.HasValue)
             {
+                var modifiers = string.Join("+", _pressedModifiers);
+                _logger.Log($"Hotkey matched: {matched.Value} (Modifiers={modifiers}, MainKey={mainKey ?? "(none)"})");
                 FeatureTriggered?.Invoke(matched.Value);
             }
         }
