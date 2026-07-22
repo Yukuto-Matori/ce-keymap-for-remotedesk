@@ -1,3 +1,5 @@
+[English](README.en.md) | [日本語](README.md)
+
 # ce-keymap-for-remotedesk
 
 このアプリは Windows11 環境で動作し、キーボードのショートカット機能を追加します。
