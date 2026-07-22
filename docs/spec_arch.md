@@ -33,6 +33,7 @@
    - キーバインド変更ダイアログ、機能ON/OFF切り替えメニュー、自動起動設定メニュー
    - キーバインド変更はドロップダウン選択方式とする（キー押下キャプチャ方式は採用しない）
    - 修飾キーなし、またはメインキーのみ（修飾キー未選択）の組み合わせは許可しない（入力バリデーションで保存を拒否する）
+   - 拡大率の指定もドロップダウン選択方式とする（Windows標準の拡大率ステップ値 100/125/150/175/200/225/250/300% から選択。自由入力にすると実際のディスプレイ設定側の選択肢と一致せず、意図しない値に丸められるため）
 2. **ホットキー検知層**
    - `SetWindowsHookEx` (`WH_KEYBOARD_LL`) によるグローバル低レベルキーボードフック
    - 押下中の修飾キー・メインキーの組み合わせを監視し、登録済みキーバインドと一致したら機能実行層へ通知
@@ -54,10 +55,10 @@
 
 | 機能 | デフォルトキー | 処理内容 |
 |---|---|---|
-| アプリウィンドウ切り替え | 右Alt + 右Shift | `SendInput` で Alt+Tab 相当のキー入力をエミュレートする |
-| 拡大率変更 デスクトップ用 | 右Alt + D | Windows表示スケーリング(DPI)を、設定で指定された「デスクトップ用」の拡大率に変更する |
-| 拡大率変更 モバイル用 | 右Alt + M | Windows表示スケーリング(DPI)を、設定で指定された「モバイル用」の拡大率に変更する |
-| Winキー押下 | 右Alt + W | `SendInput` で Windowsキー単体を押下したのと同じキー入力をエミュレートする |
+| アプリウィンドウ切り替え | 右Alt + 右Shift + A | `SendInput` で Alt+Tab 相当のキー入力をエミュレートする |
+| 拡大率変更 デスクトップ用 | 右Alt + 右Shift + D | Windows表示スケーリング(DPI)を、設定で指定された「デスクトップ用」の拡大率に変更する |
+| 拡大率変更 モバイル用 | 右Alt + 右Shift + M | Windows表示スケーリング(DPI)を、設定で指定された「モバイル用」の拡大率に変更する |
+| Winキー押下 | 右Alt + 右Shift + W | `SendInput` で Windowsキー単体を押下したのと同じキー入力をエミュレートする |
 
 - 各機能はキーバインド変更・個別ON/OFFが可能
 - 拡大率変更機能は、拡大率の値自体も設定で指定可能
@@ -75,23 +76,23 @@
   "AppWindowSwitch": {
     "Enabled": true,
     "Modifiers": ["RAlt", "RShift"],
-    "Key": null
+    "Key": "A"
   },
   "ZoomDesktop": {
     "Enabled": true,
-    "Modifiers": ["RAlt"],
+    "Modifiers": ["RAlt", "RShift"],
     "Key": "D",
     "ZoomPercent": 100
   },
   "ZoomMobile": {
     "Enabled": true,
-    "Modifiers": ["RAlt"],
+    "Modifiers": ["RAlt", "RShift"],
     "Key": "M",
     "ZoomPercent": 150
   },
   "PressWinKey": {
     "Enabled": true,
-    "Modifiers": ["RAlt"],
+    "Modifiers": ["RAlt", "RShift"],
     "Key": "W"
   },
   "AutoStart": false

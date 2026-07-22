@@ -92,7 +92,7 @@ namespace CeKeymap.Core.Tests.Keybinding
         public void SetBinding_ConflictDetectedRegardlessOfModifierOrderOrCase()
         {
             var settings = AppSettings.CreateDefault();
-            var equivalentCombo = new KeyCombo(new[] { ModifierKey.RAlt }, "d"); // ZoomDesktop uses "D"
+            var equivalentCombo = new KeyCombo(new[] { ModifierKey.RShift, ModifierKey.RAlt }, "d"); // ZoomDesktop uses RAlt+RShift+D
 
             var result = _registry.SetBinding(settings, FeatureId.PressWinKey, equivalentCombo);
 

@@ -23,21 +23,21 @@ namespace CeKeymap.Core.Models
                     [FeatureId.AppWindowSwitch] = new FeatureBinding(
                         FeatureId.AppWindowSwitch,
                         enabled: true,
-                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, null)),
+                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "A")),
                     [FeatureId.ZoomDesktop] = new FeatureBinding(
                         FeatureId.ZoomDesktop,
                         enabled: true,
-                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt }, "D"),
+                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "D"),
                         zoomPercent: 100),
                     [FeatureId.ZoomMobile] = new FeatureBinding(
                         FeatureId.ZoomMobile,
                         enabled: true,
-                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt }, "M"),
+                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "M"),
                         zoomPercent: 150),
                     [FeatureId.PressWinKey] = new FeatureBinding(
                         FeatureId.PressWinKey,
                         enabled: true,
-                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt }, "W")),
+                        keyCombo: new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "W")),
                 }
             };
         }

@@ -160,15 +160,13 @@ namespace CeKeymap.App
         private void EditZoomPercent(FeatureId featureId)
         {
             var binding = _settings.Features[featureId];
-            var input = Microsoft.VisualBasic.Interaction.InputBox(
-                "拡大率(%)を入力してください。",
-                "CeKeymap",
-                binding.ZoomPercent?.ToString() ?? "100");
-
-            if (int.TryParse(input, out var percent) && percent > 0)
+            using (var form = new ZoomPercentEditForm(binding.ZoomPercent ?? 100))
             {
-                binding.ZoomPercent = percent;
-                _settingsRepository.Save(_settings);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    binding.ZoomPercent = form.SelectedPercent;
+                    _settingsRepository.Save(_settings);
+                }
             }
         }
 

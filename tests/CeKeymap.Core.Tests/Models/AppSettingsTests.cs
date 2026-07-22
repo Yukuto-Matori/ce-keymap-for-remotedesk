@@ -28,7 +28,7 @@ namespace CeKeymap.Core.Tests.Models
 
             Assert.That(binding.Enabled, Is.True);
             Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt, ModifierKey.RShift }));
-            Assert.That(binding.KeyCombo.MainKey, Is.Null);
+            Assert.That(binding.KeyCombo.MainKey, Is.EqualTo("A"));
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace CeKeymap.Core.Tests.Models
             var binding = AppSettings.CreateDefault().Features[FeatureId.ZoomDesktop];
 
             Assert.That(binding.Enabled, Is.True);
-            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt }));
+            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt, ModifierKey.RShift }));
             Assert.That(binding.KeyCombo.MainKey, Is.EqualTo("D"));
             Assert.That(binding.ZoomPercent, Is.EqualTo(100));
         }
@@ -48,7 +48,7 @@ namespace CeKeymap.Core.Tests.Models
             var binding = AppSettings.CreateDefault().Features[FeatureId.ZoomMobile];
 
             Assert.That(binding.Enabled, Is.True);
-            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt }));
+            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt, ModifierKey.RShift }));
             Assert.That(binding.KeyCombo.MainKey, Is.EqualTo("M"));
             Assert.That(binding.ZoomPercent, Is.EqualTo(150));
         }
@@ -59,7 +59,7 @@ namespace CeKeymap.Core.Tests.Models
             var binding = AppSettings.CreateDefault().Features[FeatureId.PressWinKey];
 
             Assert.That(binding.Enabled, Is.True);
-            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt }));
+            Assert.That(binding.KeyCombo.Modifiers, Is.EquivalentTo(new[] { ModifierKey.RAlt, ModifierKey.RShift }));
             Assert.That(binding.KeyCombo.MainKey, Is.EqualTo("W"));
         }
 

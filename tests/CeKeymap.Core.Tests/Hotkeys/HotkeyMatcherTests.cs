@@ -11,9 +11,9 @@ namespace CeKeymap.Core.Tests.Hotkeys
         [Test]
         public void Match_ExactModifiersAndMainKey_ReturnsFeatureId()
         {
-            var settings = AppSettings.CreateDefault(); // ZoomDesktop = RAlt + D
+            var settings = AppSettings.CreateDefault(); // ZoomDesktop = RAlt+RShift+D
 
-            var result = _matcher.Match(new[] { ModifierKey.RAlt }, "D", settings);
+            var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "D", settings);
 
             Assert.That(result, Is.EqualTo(FeatureId.ZoomDesktop));
         }
@@ -23,7 +23,7 @@ namespace CeKeymap.Core.Tests.Hotkeys
         {
             var settings = AppSettings.CreateDefault();
 
-            var result = _matcher.Match(new[] { ModifierKey.RAlt }, "d", settings);
+            var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "d", settings);
 
             Assert.That(result, Is.EqualTo(FeatureId.ZoomDesktop));
         }
@@ -34,7 +34,7 @@ namespace CeKeymap.Core.Tests.Hotkeys
             var settings = AppSettings.CreateDefault();
             settings.Features[FeatureId.ZoomDesktop].Enabled = false;
 
-            var result = _matcher.Match(new[] { ModifierKey.RAlt }, "D", settings);
+            var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "D", settings);
 
             Assert.That(result, Is.Null);
         }
@@ -44,7 +44,7 @@ namespace CeKeymap.Core.Tests.Hotkeys
         {
             var settings = AppSettings.CreateDefault();
 
-            var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RCtrl }, "D", settings);
+            var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RShift, ModifierKey.RCtrl }, "D", settings);
 
             Assert.That(result, Is.Null);
         }
@@ -62,7 +62,9 @@ namespace CeKeymap.Core.Tests.Hotkeys
         [Test]
         public void Match_ModifierOnlyCombo_MatchesWhenNoMainKeyPressed()
         {
-            var settings = AppSettings.CreateDefault(); // AppWindowSwitch = RAlt + RShift, no main key
+            var settings = AppSettings.CreateDefault();
+            settings.Features[FeatureId.AppWindowSwitch].KeyCombo =
+                new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, null);
 
             var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RShift }, null, settings);
 
@@ -73,6 +75,8 @@ namespace CeKeymap.Core.Tests.Hotkeys
         public void Match_ModifierOnlyCombo_DoesNotMatchWhenExtraMainKeyPressed()
         {
             var settings = AppSettings.CreateDefault();
+            settings.Features[FeatureId.AppWindowSwitch].KeyCombo =
+                new KeyCombo(new[] { ModifierKey.RAlt, ModifierKey.RShift }, null);
 
             var result = _matcher.Match(new[] { ModifierKey.RAlt, ModifierKey.RShift }, "X", settings);
 
