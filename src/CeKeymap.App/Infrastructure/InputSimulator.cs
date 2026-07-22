@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -17,6 +18,9 @@ namespace CeKeymap.App.Infrastructure
         private const ushort VkTab = 0x09;
         private const ushort VkLWin = 0x5B;
 
+        // The six modifier VKs the low-level hook itself tracks; must match KeyboardHookService.
+        private static readonly ushort[] ModifierVks = { 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5 };
+
         public void SimulateAppWindowSwitch()
         {
             SendKeyDown(VkMenu);
@@ -28,12 +32,20 @@ namespace CeKeymap.App.Infrastructure
 
         public void SimulateWinKeyPress()
         {
-            // The Start Menu trigger is picky about how the Win key event looks: it must carry
-            // the extended-key flag and a real scan code (like a genuine LWin key press), and a
-            // zero-duration down+up can be missed entirely, hence the short hold.
+            // Windows only opens the Start Menu for a "clean" Win press/release with no other
+            // key involved. Since this feature is triggered by a modifier+key hotkey (e.g.
+            // RAlt+W), that modifier is still physically held at this point, so Windows would
+            // see "RAlt+Win" (which has no default action) unless we temporarily fake-release
+            // it around the Win keystroke and restore it afterward.
+            var heldModifiers = ModifierVks.Where(vk => (GetAsyncKeyState(vk) & 0x8000) != 0).ToArray();
+
+            foreach (var vk in heldModifiers) SendKeyUp(vk);
+
             SendKeyDown(VkLWin, extended: true);
             Thread.Sleep(50);
             SendKeyUp(VkLWin, extended: true);
+
+            foreach (var vk in heldModifiers) SendKeyDown(vk);
         }
 
         private static void SendKeyDown(ushort vk, bool extended = false) => SendKeyInput(vk, keyUp: false, extended: extended);
@@ -77,6 +89,9 @@ namespace CeKeymap.App.Infrastructure
 
         [DllImport("user32.dll")]
         private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(int vKey);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct INPUT
