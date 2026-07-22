@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Debug Exe (CeKeymap.App)",
+      "type": "clr",
+      "request": "launch",
+      "preLaunchTask": "Build: Debug (CeKeymap.App)",
+      "program": "${workspaceFolder}/src/CeKeymap.App/bin/Debug/net48/CeKeymap.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/CeKeymap.App/bin/Debug/net48",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    }
+  ]
+}
