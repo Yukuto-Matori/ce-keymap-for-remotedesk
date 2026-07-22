@@ -1,0 +1,40 @@
+{
+  "tray.icon.text": "CeKeymapForRemotedesk",
+  "tray.menu.featureSettings": "機能設定",
+  "tray.menu.autoStart": "PC起動後に自動起動",
+  "tray.menu.developer": "開発者向け",
+  "tray.menu.openLog": "アプリログを開く",
+  "tray.menu.exit": "終了",
+  "tray.menu.enabled": "有効",
+  "tray.menu.editKeybinding": "キーバインド変更...",
+  "tray.menu.editZoomPercent": "拡大率の指定...",
+  "tray.dialog.logNotFound": "ログファイルはまだ作成されていません。",
+  "tray.dialog.logOpenFailed": "ログファイルを開けませんでした。",
+  "tray.dialog.keybindingBumped": "「{0}」が同じキーバインドを使用していたため、OFFになりました。",
+
+  "feature.appWindowSwitch": "アプリウィンドウ切り替え",
+  "feature.zoomDesktop": "拡大率変更 デスクトップ用",
+  "feature.zoomMobile": "拡大率変更 モバイル用",
+  "feature.pressWinKey": "Winキー押下",
+
+  "keybindingForm.title": "キーバインド変更 - {0}",
+  "keybindingForm.modifier1": "修飾キー 1",
+  "keybindingForm.modifier2": "修飾キー 2",
+  "keybindingForm.mainKey": "メインキー",
+  "keybindingForm.none": "(なし)",
+  "keybindingForm.validationError": "修飾キーを1つ以上選択し、メインキーまたは2つ目の修飾キーを指定してください。",
+
+  "zoomForm.title": "拡大率の指定",
+  "zoomForm.label": "拡大率",
+
+  "common.ok": "OK",
+  "common.cancel": "キャンセル",
+
+  "settings.dialog.corrupted": "設定ファイル(settings.json)が壊れているため、デフォルト設定を復元します。",
+  "settings.dialog.versionMismatch": "設定ファイルのバージョンが異なるため、一部の設定項目にデフォルト値を適用しました。",
+
+  "hook.dialog.installFailed": "キーボードフックの設置に失敗しました。アプリを終了します。",
+  "hook.dialog.uninstallFailed": "キーボードフックの解除に失敗しました。アプリを終了します。",
+
+  "program.dialog.unexpectedError": "予期しないエラーが発生しました。詳細は log.txt を確認してください。"
+}

@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using CeKeymap.App.Infrastructure;
 
 namespace CeKeymap.App.Forms
 {
@@ -21,14 +22,14 @@ namespace CeKeymap.App.Forms
 
         public ZoomPercentEditForm(int currentPercent)
         {
-            Text = "拡大率の指定";
+            Text = Loc.Get("zoomForm.title");
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
             StartPosition = FormStartPosition.CenterParent;
             ClientSize = new Size(240, 110);
 
-            var label = new Label { Text = "拡大率", Location = new Point(12, 15), AutoSize = true };
+            var label = new Label { Text = Loc.Get("zoomForm.label"), Location = new Point(12, 15), AutoSize = true };
             _percentCombo.Location = new Point(80, 12);
             _percentCombo.Width = 140;
             _percentCombo.Items.AddRange(StandardPercentOptions.Select(p => (object)$"{p}%").ToArray());
@@ -36,7 +37,7 @@ namespace CeKeymap.App.Forms
             var closest = StandardPercentOptions.OrderBy(p => Math.Abs(p - currentPercent)).First();
             _percentCombo.SelectedItem = $"{closest}%";
 
-            var okButton = new Button { Text = "OK", Location = new Point(60, 65) };
+            var okButton = new Button { Text = Loc.Get("common.ok"), Location = new Point(60, 65) };
             okButton.Click += (s, e) =>
             {
                 var text = (string)_percentCombo.SelectedItem;
@@ -45,7 +46,7 @@ namespace CeKeymap.App.Forms
                 Close();
             };
 
-            var cancelButton = new Button { Text = "キャンセル", DialogResult = DialogResult.Cancel, Location = new Point(145, 65) };
+            var cancelButton = new Button { Text = Loc.Get("common.cancel"), DialogResult = DialogResult.Cancel, Location = new Point(145, 65) };
 
             Controls.AddRange(new Control[] { label, _percentCombo, okButton, cancelButton });
             AcceptButton = okButton;

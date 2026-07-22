@@ -53,7 +53,7 @@ namespace CeKeymap.App.Infrastructure
                 var error = Marshal.GetLastWin32Error();
                 _logger.LogError($"Failed to install the keyboard hook (Win32 error {error}).");
                 MessageBox.Show(
-                    "キーボードフックの設置に失敗しました。アプリを終了します。",
+                    Loc.Get("hook.dialog.installFailed"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -73,7 +73,7 @@ namespace CeKeymap.App.Infrastructure
             {
                 _logger.LogError("Failed to uninstall the keyboard hook.");
                 MessageBox.Show(
-                    "キーボードフックの解除に失敗しました。アプリを終了します。",
+                    Loc.Get("hook.dialog.uninstallFailed"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

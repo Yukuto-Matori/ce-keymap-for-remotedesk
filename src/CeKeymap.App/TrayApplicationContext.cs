@@ -11,12 +11,12 @@ namespace CeKeymap.App
 {
     internal sealed class TrayApplicationContext : ApplicationContext
     {
-        private static readonly (FeatureId Id, string Label)[] FeatureLabels =
+        private static readonly FeatureId[] AllFeatures =
         {
-            (FeatureId.AppWindowSwitch, "アプリウィンドウ切り替え"),
-            (FeatureId.ZoomDesktop, "拡大率変更 デスクトップ用"),
-            (FeatureId.ZoomMobile, "拡大率変更 モバイル用"),
-            (FeatureId.PressWinKey, "Winキー押下"),
+            FeatureId.AppWindowSwitch,
+            FeatureId.ZoomDesktop,
+            FeatureId.ZoomMobile,
+            FeatureId.PressWinKey,
         };
 
         private readonly NotifyIcon _notifyIcon;
@@ -49,7 +49,7 @@ namespace CeKeymap.App
             {
                 Icon = icon,
                 Visible = true,
-                Text = "CeKeymapForRemotedesk",
+                Text = Loc.Get("tray.icon.text"),
                 ContextMenuStrip = BuildContextMenu(),
             };
         }
@@ -58,14 +58,14 @@ namespace CeKeymap.App
         {
             var menu = new ContextMenuStrip();
 
-            var featureMenu = new ToolStripMenuItem("機能設定");
-            foreach (var (featureId, label) in FeatureLabels)
+            var featureMenu = new ToolStripMenuItem(Loc.Get("tray.menu.featureSettings"));
+            foreach (var featureId in AllFeatures)
             {
-                featureMenu.DropDownItems.Add(BuildFeatureSubmenu(featureId, label));
+                featureMenu.DropDownItems.Add(BuildFeatureSubmenu(featureId));
             }
             menu.Items.Add(featureMenu);
 
-            var autoStartItem = new ToolStripMenuItem("PC起動後に自動起動")
+            var autoStartItem = new ToolStripMenuItem(Loc.Get("tray.menu.autoStart"))
             {
                 CheckOnClick = true,
                 Checked = _settings.AutoStart,
@@ -78,12 +78,12 @@ namespace CeKeymap.App
             };
             menu.Items.Add(autoStartItem);
 
-            var developerMenu = new ToolStripMenuItem("開発者向け");
-            developerMenu.DropDownItems.Add(new ToolStripMenuItem("アプリログを開く", null, (s, e) => OpenLogFile()));
+            var developerMenu = new ToolStripMenuItem(Loc.Get("tray.menu.developer"));
+            developerMenu.DropDownItems.Add(new ToolStripMenuItem(Loc.Get("tray.menu.openLog"), null, (s, e) => OpenLogFile()));
             menu.Items.Add(developerMenu);
 
             menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add(new ToolStripMenuItem("終了", null, (s, e) => ExitApplication()));
+            menu.Items.Add(new ToolStripMenuItem(Loc.Get("tray.menu.exit"), null, (s, e) => ExitApplication()));
 
             return menu;
         }
@@ -93,7 +93,7 @@ namespace CeKeymap.App
             if (!File.Exists(_logger.FilePath))
             {
                 MessageBox.Show(
-                    "ログファイルはまだ作成されていません。",
+                    Loc.Get("tray.dialog.logNotFound"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -108,19 +108,19 @@ namespace CeKeymap.App
             {
                 _logger.LogError("Failed to open log.txt with the system default app.", ex);
                 MessageBox.Show(
-                    "ログファイルを開けませんでした。",
+                    Loc.Get("tray.dialog.logOpenFailed"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
 
-        private ToolStripMenuItem BuildFeatureSubmenu(FeatureId featureId, string label)
+        private ToolStripMenuItem BuildFeatureSubmenu(FeatureId featureId)
         {
             var binding = _settings.Features[featureId];
-            var root = new ToolStripMenuItem(label);
+            var root = new ToolStripMenuItem(Loc.FeatureLabel(featureId));
 
-            var enabledItem = new ToolStripMenuItem("有効")
+            var enabledItem = new ToolStripMenuItem(Loc.Get("tray.menu.enabled"))
             {
                 CheckOnClick = true,
                 Checked = binding.Enabled,
@@ -132,7 +132,7 @@ namespace CeKeymap.App
             };
             root.DropDownItems.Add(enabledItem);
 
-            var editItem = new ToolStripMenuItem("キーバインド変更...");
+            var editItem = new ToolStripMenuItem(Loc.Get("tray.menu.editKeybinding"));
             editItem.Click += (s, e) =>
             {
                 using (var form = new KeybindingEditForm(_settings, featureId))
@@ -149,7 +149,7 @@ namespace CeKeymap.App
 
             if (featureId == FeatureId.ZoomDesktop || featureId == FeatureId.ZoomMobile)
             {
-                var zoomItem = new ToolStripMenuItem("拡大率の指定...");
+                var zoomItem = new ToolStripMenuItem(Loc.Get("tray.menu.editZoomPercent"));
                 zoomItem.Click += (s, e) => EditZoomPercent(featureId);
                 root.DropDownItems.Add(zoomItem);
             }

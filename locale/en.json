@@ -1,0 +1,40 @@
+{
+  "tray.icon.text": "CeKeymapForRemotedesk",
+  "tray.menu.featureSettings": "Feature Settings",
+  "tray.menu.autoStart": "Start on Windows Login",
+  "tray.menu.developer": "Developer",
+  "tray.menu.openLog": "Open App Log",
+  "tray.menu.exit": "Exit",
+  "tray.menu.enabled": "Enabled",
+  "tray.menu.editKeybinding": "Change Keybinding...",
+  "tray.menu.editZoomPercent": "Set Zoom Percent...",
+  "tray.dialog.logNotFound": "The log file has not been created yet.",
+  "tray.dialog.logOpenFailed": "Failed to open the log file.",
+  "tray.dialog.keybindingBumped": "\"{0}\" was using the same keybinding and has been turned off.",
+
+  "feature.appWindowSwitch": "App Window Switch",
+  "feature.zoomDesktop": "Zoom Change - Desktop",
+  "feature.zoomMobile": "Zoom Change - Mobile",
+  "feature.pressWinKey": "Press Win Key",
+
+  "keybindingForm.title": "Change Keybinding - {0}",
+  "keybindingForm.modifier1": "Modifier 1",
+  "keybindingForm.modifier2": "Modifier 2",
+  "keybindingForm.mainKey": "Main Key",
+  "keybindingForm.none": "(None)",
+  "keybindingForm.validationError": "Select at least one modifier, and either a main key or a second modifier.",
+
+  "zoomForm.title": "Set Zoom Percent",
+  "zoomForm.label": "Zoom",
+
+  "common.ok": "OK",
+  "common.cancel": "Cancel",
+
+  "settings.dialog.corrupted": "settings.json is corrupted; restoring default settings.",
+  "settings.dialog.versionMismatch": "settings.json's version differs from expected; some settings were reset to defaults.",
+
+  "hook.dialog.installFailed": "Failed to install the keyboard hook. The app will now exit.",
+  "hook.dialog.uninstallFailed": "Failed to uninstall the keyboard hook. The app will now exit.",
+
+  "program.dialog.unexpectedError": "An unexpected error occurred. See log.txt for details."
+}

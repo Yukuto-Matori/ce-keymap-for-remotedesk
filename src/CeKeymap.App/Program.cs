@@ -29,6 +29,8 @@ namespace CeKeymap.App
 
                 SetUpGlobalExceptionHandling(logger);
 
+                Loc.Initialize(new LocaleFileLoader(Path.Combine(baseDirectory, "locale"), logger).Load());
+
                 var settingsRepository = new SettingsFileRepository(Path.Combine(baseDirectory, "settings.json"), logger);
                 var settings = settingsRepository.Load();
                 var autoStartService = new AutoStartService(Application.ExecutablePath);
@@ -56,7 +58,7 @@ namespace CeKeymap.App
             {
                 logger.LogError("Unhandled UI thread exception.", e.Exception);
                 MessageBox.Show(
-                    "予期しないエラーが発生しました。詳細は log.txt を確認してください。",
+                    Loc.Get("program.dialog.unexpectedError"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

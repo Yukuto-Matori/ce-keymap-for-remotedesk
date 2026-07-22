@@ -37,7 +37,7 @@ namespace CeKeymap.App.Infrastructure
             {
                 _logger.LogError("settings.json is corrupted; restoring defaults.", ex);
                 MessageBox.Show(
-                    "設定ファイル(settings.json)が壊れているため、デフォルト設定を復元します。",
+                    Loc.Get("settings.dialog.corrupted"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -52,7 +52,7 @@ namespace CeKeymap.App.Infrastructure
             {
                 _logger.Log("settings.json version mismatch; some fields were reset to defaults.");
                 MessageBox.Show(
-                    "設定ファイルのバージョンが異なるため、一部の設定項目にデフォルト値を適用しました。",
+                    Loc.Get("settings.dialog.versionMismatch"),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);

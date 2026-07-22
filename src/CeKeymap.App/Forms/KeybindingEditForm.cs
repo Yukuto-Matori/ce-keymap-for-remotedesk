@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using CeKeymap.App.Infrastructure;
 using CeKeymap.Core.Keybinding;
 using CeKeymap.Core.Models;
 
@@ -13,7 +14,7 @@ namespace CeKeymap.App.Forms
     /// </summary>
     internal sealed class KeybindingEditForm : Form
     {
-        private const string None = "(なし)";
+        private static string None => Loc.Get("keybindingForm.none");
 
         private readonly ComboBox _modifier1Combo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         private readonly ComboBox _modifier2Combo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
@@ -28,7 +29,7 @@ namespace CeKeymap.App.Forms
             _settings = settings;
             _featureId = featureId;
 
-            Text = $"キーバインド変更 - {featureId}";
+            Text = Loc.Get("keybindingForm.title", Loc.FeatureLabel(featureId));
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -52,25 +53,25 @@ namespace CeKeymap.App.Forms
             _modifier2Combo.Items.AddRange(modifierValues);
             _mainKeyCombo.Items.AddRange(mainKeyValues);
 
-            var label1 = new Label { Text = "修飾キー 1", Location = new Point(12, 15), AutoSize = true };
+            var label1 = new Label { Text = Loc.Get("keybindingForm.modifier1"), Location = new Point(12, 15), AutoSize = true };
             _modifier1Combo.Location = new Point(120, 12);
             _modifier1Combo.Width = 180;
 
-            var label2 = new Label { Text = "修飾キー 2", Location = new Point(12, 45), AutoSize = true };
+            var label2 = new Label { Text = Loc.Get("keybindingForm.modifier2"), Location = new Point(12, 45), AutoSize = true };
             _modifier2Combo.Location = new Point(120, 42);
             _modifier2Combo.Width = 180;
 
-            var label3 = new Label { Text = "メインキー", Location = new Point(12, 75), AutoSize = true };
+            var label3 = new Label { Text = Loc.Get("keybindingForm.mainKey"), Location = new Point(12, 75), AutoSize = true };
             _mainKeyCombo.Location = new Point(120, 72);
             _mainKeyCombo.Width = 180;
 
             _errorLabel.Location = new Point(12, 105);
             _errorLabel.MaximumSize = new Size(296, 40);
 
-            var okButton = new Button { Text = "OK", DialogResult = DialogResult.None, Location = new Point(140, 150) };
+            var okButton = new Button { Text = Loc.Get("common.ok"), DialogResult = DialogResult.None, Location = new Point(140, 150) };
             okButton.Click += OkButton_Click;
 
-            var cancelButton = new Button { Text = "キャンセル", DialogResult = DialogResult.Cancel, Location = new Point(225, 150) };
+            var cancelButton = new Button { Text = Loc.Get("common.cancel"), DialogResult = DialogResult.Cancel, Location = new Point(225, 150) };
 
             Controls.AddRange(new Control[]
             {
@@ -110,7 +111,7 @@ namespace CeKeymap.App.Forms
 
             if (!_registry.Validate(newCombo))
             {
-                _errorLabel.Text = "修飾キーを1つ以上選択し、メインキーまたは2つ目の修飾キーを指定してください。";
+                _errorLabel.Text = Loc.Get("keybindingForm.validationError");
                 return;
             }
 
@@ -118,7 +119,7 @@ namespace CeKeymap.App.Forms
             if (result.BumpedFeatureId.HasValue)
             {
                 MessageBox.Show(
-                    $"「{result.BumpedFeatureId}」が同じキーバインドを使用していたため、OFFになりました。",
+                    Loc.Get("tray.dialog.keybindingBumped", Loc.FeatureLabel(result.BumpedFeatureId.Value)),
                     "CeKeymap",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
