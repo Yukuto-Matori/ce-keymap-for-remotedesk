@@ -1,27 +1,75 @@
-using System.Runtime.InteropServices;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using Microsoft.Win32;
 
 namespace CeKeymap.App.Infrastructure
 {
     /// <summary>
-    /// Changes the current display's scaling ("拡大率") immediately, without sign-out.
-    /// Uses SPI_SETLOGICALDPIOVERRIDE (undocumented but stable since Windows 10 1703, used by
-    /// several public DPI-changing utilities): it takes a step count relative to the display's
-    /// recommended scaling, in the same 25%-wide steps as the Settings > Display scaling slider.
+    /// Changes the current display's scaling ("拡大率") by writing the same registry values
+    /// Windows' own Settings app uses (HKCU\Control Panel\Desktop\PerMonitorSettings\&lt;monitor&gt;\DpiValue,
+    /// a signed step offset from the monitor's recommended scaling, in the same ~25%-wide steps
+    /// as the Settings &gt; Display scaling slider), then restarts explorer.exe to force an
+    /// immediate re-read without requiring a full sign-out.
     /// </summary>
     internal sealed class DisplayScalingService
     {
-        private const uint SpiSetLogicalDpiOverride = 0x009E;
-        private const uint SpifSendChange = 0x02;
+        private const string PerMonitorSettingsPath = @"Control Panel\Desktop\PerMonitorSettings";
         private const int RecommendedScalingPercent = 100;
         private const int StepPercent = 25;
 
-        public void ApplyZoomPercent(int zoomPercent)
+        private readonly FileLogger _logger;
+
+        public DisplayScalingService(FileLogger logger)
         {
-            var step = (zoomPercent - RecommendedScalingPercent) / StepPercent;
-            SystemParametersInfo(SpiSetLogicalDpiOverride, (uint)step, System.IntPtr.Zero, SpifSendChange);
+            _logger = logger;
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, System.IntPtr pvParam, uint fWinIni);
+        public void ApplyZoomPercent(int zoomPercent)
+        {
+            var step = (int)Math.Round((zoomPercent - RecommendedScalingPercent) / (double)StepPercent, MidpointRounding.AwayFromZero);
+
+            using (var perMonitorKey = Registry.CurrentUser.OpenSubKey(PerMonitorSettingsPath, writable: true))
+            {
+                if (perMonitorKey == null)
+                {
+                    _logger.LogError("PerMonitorSettings registry key was not found; cannot change display scaling.");
+                    return;
+                }
+
+                foreach (var monitorName in perMonitorKey.GetSubKeyNames())
+                {
+                    using (var monitorKey = perMonitorKey.OpenSubKey(monitorName, writable: true))
+                    {
+                        monitorKey?.SetValue("DpiValue", step, RegistryValueKind.DWord);
+                    }
+                }
+            }
+
+            _logger.Log($"Wrote DpiValue={step} (ZoomPercent={zoomPercent}) to all monitors; restarting explorer.exe to apply.");
+            RestartExplorer();
+        }
+
+        private void RestartExplorer()
+        {
+            foreach (var process in Process.GetProcessesByName("explorer"))
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Failed to stop an explorer.exe process.", ex);
+                }
+                finally
+                {
+                    process.Dispose();
+                }
+            }
+
+            Thread.Sleep(300);
+            Process.Start("explorer.exe");
+        }
     }
 }

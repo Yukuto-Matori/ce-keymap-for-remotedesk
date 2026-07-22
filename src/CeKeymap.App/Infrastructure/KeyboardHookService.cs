@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using CeKeymap.Core.Hotkeys;
 using CeKeymap.Core.Models;
@@ -143,7 +144,21 @@ namespace CeKeymap.App.Infrastructure
             {
                 var modifiers = string.Join("+", _pressedModifiers);
                 _logger.Log($"Hotkey matched: {matched.Value} (Modifiers={modifiers}, MainKey={mainKey ?? "(none)"})");
-                FeatureTriggered?.Invoke(matched.Value);
+
+                // Feature execution (SendInput, etc.) must not run synchronously inside this hook
+                // callback: injecting input while the OS is still dispatching the original physical
+                // key event through the hook chain is a well-known source of dropped/misbehaving
+                // injected input. Defer it to the next message loop iteration instead.
+                var featureId = matched.Value;
+                var context = SynchronizationContext.Current;
+                if (context != null)
+                {
+                    context.Post(_ => FeatureTriggered?.Invoke(featureId), null);
+                }
+                else
+                {
+                    FeatureTriggered?.Invoke(featureId);
+                }
             }
         }
 

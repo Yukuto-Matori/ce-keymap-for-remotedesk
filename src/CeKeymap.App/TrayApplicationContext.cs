@@ -26,7 +26,7 @@ namespace CeKeymap.App
         private readonly KeyboardHookService _hookService;
         private readonly FileLogger _logger;
         private readonly InputSimulator _inputSimulator = new InputSimulator();
-        private readonly DisplayScalingService _displayScalingService = new DisplayScalingService();
+        private readonly DisplayScalingService _displayScalingService;
 
         public TrayApplicationContext(
             AppSettings settings,
@@ -41,6 +41,7 @@ namespace CeKeymap.App
             _autoStartService = autoStartService;
             _hookService = hookService;
             _logger = logger;
+            _displayScalingService = new DisplayScalingService(logger);
 
             _hookService.FeatureTriggered += OnFeatureTriggered;
 
