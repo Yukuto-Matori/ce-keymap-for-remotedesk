@@ -36,6 +36,19 @@ by copying this file.
 - Developer
   - Open app log ... opens log.txt (in the same folder as the app/exe) with the system default app
 
+## About the Windows SmartScreen warning
+
+This app is not code-signed, so the first time you run the downloaded CeKeymap.exe, Windows
+SmartScreen may show a "Windows protected your PC" warning. This is a generic warning shown for
+any executable from an unverified publisher, not an issue specific to this app.
+
+To run it anyway:
+
+1. Click "More info" in the warning dialog
+2. Click the "Run anyway" button that appears
+
+Once you've done this, the same warning won't appear again for this file.
+
 ## Internal architecture spec
 
 For developer-facing internal implementation details, see the [architecture spec](docs/spec_arch.md) (Japanese only).
