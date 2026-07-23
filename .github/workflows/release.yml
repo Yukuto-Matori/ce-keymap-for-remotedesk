@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore
+        run: dotnet restore CeKeymapForRemotedesk.sln
+
+      - name: Build (Release)
+        run: dotnet build CeKeymapForRemotedesk.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/CeKeymap.Core.Tests/CeKeymap.Core.Tests.csproj -c Release --no-build
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $publishDir = "publish/CeKeymapForRemotedesk"
+          New-Item -ItemType Directory -Force -Path $publishDir | Out-Null
+
+          Copy-Item "src/CeKeymap.App/bin/Release/net48/*" -Destination $publishDir -Recurse -Force -Exclude "*.pdb"
+          Remove-Item -Path "$publishDir/settings.json" -ErrorAction SilentlyContinue
+          Remove-Item -Path "$publishDir/log.txt" -ErrorAction SilentlyContinue
+
+          Copy-Item "README.md" -Destination $publishDir
+          Copy-Item "README.en.md" -Destination $publishDir
+          Copy-Item "LICENSE" -Destination $publishDir
+
+          $zipPath = "publish/CeKeymapForRemotedesk-${{ github.ref_name }}.zip"
+          Compress-Archive -Path "$publishDir/*" -DestinationPath $zipPath
+
+          echo "ZIP_PATH=$zipPath" >> $env:GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_PATH }}
+          generate_release_notes: true
