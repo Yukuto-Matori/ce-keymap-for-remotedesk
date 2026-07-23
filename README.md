@@ -1,6 +1,16 @@
 [English](README.en.md) | [日本語](README.md)
 
-# ce-keymap-for-remotedesk
+<p align="center">
+  <img src="resources/appicon_512x512.png" width="128" alt="CeKeymapForRemotedesk icon" />
+</p>
+
+<h1 align="center">ce-keymap-for-remotedesk</h1>
+
+<p align="center">
+  <a href="https://github.com/Yukuto-Matori/ce-keymap-for-remotedesk/releases/latest"><img src="https://img.shields.io/github/v/release/Yukuto-Matori/ce-keymap-for-remotedesk" alt="Latest Release" /></a>
+  <a href="https://github.com/Yukuto-Matori/ce-keymap-for-remotedesk/actions/workflows/release.yml"><img src="https://github.com/Yukuto-Matori/ce-keymap-for-remotedesk/actions/workflows/release.yml/badge.svg" alt="Release Workflow" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Yukuto-Matori/ce-keymap-for-remotedesk" alt="License" /></a>
+</p>
 
 このアプリは Windows11 環境で動作し、キーボードのショートカット機能を追加します。
 Android から Parsec でリモート接続した時などで使えないショートカット機能を代替できます。
